@@ -1,6 +1,7 @@
 require 'find'
 require 'thread'
 require 'aws-sdk-s3'
+require 'mimemagic'
 
 module Jekyll
   module Deploy
@@ -57,7 +58,8 @@ module Jekyll
                     acl: 'public-read',
                     body: File.open(local_file_path),
                     bucket: @remote_space,
-                    key: action[:file]
+                    key: action[:file],
+                    content_type: MimeMagic.by_path(local_file_path).type
                   )
                   mtime = @client.get_object(
                     bucket: @remote_space,
